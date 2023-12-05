@@ -24,7 +24,6 @@ import (
 	"net/http"
 	"net/url"
 	"path"
-	"strconv"
 	"strings"
 	"time"
 
@@ -162,19 +161,10 @@ func NewClient(client *http.Client, baseURL *url.URL, headers http.Header, verb 
 	return NewClientForAPI(genericClient, verb)
 }
 
-// String returns an seconds string representation of the Time rather than milliseconds.
-func intString(t model.Time) string {
-	minimumTick := time.Millisecond
-	// second is the Time duration equivalent to one second.
-	second := int64(time.Second / minimumTick)
-	return strconv.FormatInt(int64(t)/int64(second), 10)
-}
-
 func (h *queryClient) Series(ctx context.Context, interval model.Interval, selectors ...Selector) ([]Series, error) {
 	vals := url.Values{}
 	if interval.Start != 0 {
-		// vals.Set("start", interval.Start.String())
-		vals.Set("start", intString(interval.Start))
+		vals.Set("start", interval.Start.String())
 	}
 	if interval.End != 0 {
 		vals.Set("end", interval.End.String())
