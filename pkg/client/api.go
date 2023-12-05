@@ -175,7 +175,7 @@ func IntToString(t model.Time) string {
 func (h *queryClient) Series(ctx context.Context, interval model.Interval, selectors ...Selector) ([]Series, error) {
 	vals := url.Values{}
 	if interval.Start != 0 {
-		vals.Set("start", interval.Start.String())
+		vals.Set("start", IntToString(interval.Start))
 	}
 	if interval.End != 0 {
 		vals.Set("end", interval.End.String())
