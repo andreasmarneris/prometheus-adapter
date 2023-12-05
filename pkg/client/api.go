@@ -24,6 +24,7 @@ import (
 	"net/http"
 	"net/url"
 	"path"
+	"strconv"
 	"strings"
 	"time"
 
@@ -159,6 +160,16 @@ func NewClientForAPI(client GenericAPIClient, verb string) Client {
 func NewClient(client *http.Client, baseURL *url.URL, headers http.Header, verb string) Client {
 	genericClient := NewGenericAPIClient(client, baseURL, headers)
 	return NewClientForAPI(genericClient, verb)
+}
+
+// Workaround because of a Prometheus proxy only accepting seconds, not millisecond fractions
+func IntToString(t model.Time) string {
+	// MinimumTick is the minimum supported time resolution. This has to be
+	// at least time.Second in order for the code below to work.
+	minimumTick := time.Millisecond
+	// second is the Time duration equivalent to one second.
+	second := int64(time.Second / minimumTick)
+	return strconv.FormatInt(int64(t)/int64(second), 10)
 }
 
 func (h *queryClient) Series(ctx context.Context, interval model.Interval, selectors ...Selector) ([]Series, error) {
