@@ -24,7 +24,6 @@ jobs:
       matrix:
         platform:
           - amd64
-          - arm64
     permissions:
       contents: read
       packages: write
